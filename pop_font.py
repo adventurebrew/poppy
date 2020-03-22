@@ -61,6 +61,6 @@ if __name__ == '__main__':
     basename = os.path.basename(filename)
     with open(filename, 'rb') as f:
         chars, char_images = decode(f)
-        im = create_char_grid(chars.stop, [(c, cim) for c, cim in zip(chars, char_images)])
+        im = create_char_grid(chars.stop, zip(chars, char_images))
         im.putpalette(palette)
         im.save(f'{basename}.png')
