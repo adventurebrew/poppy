@@ -45,6 +45,7 @@ def decode(stream):
     height_below_baseline = read_sint16le(stream)
     space_between_lines = read_sint16le(stream)
     space_between_chars = read_sint16le(stream)
+    print(height_above_baseline, height_below_baseline, space_between_lines, space_between_chars)
     assert stream.tell() == 0xA
     chars = range(first_char, last_char + 1)
     index = tuple(read_sint16le(stream) for c in chars)

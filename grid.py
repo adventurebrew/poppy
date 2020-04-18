@@ -12,7 +12,7 @@ GRID_SIZE = 16
 
 def convert_to_pil_image(char, size=None):
     # print('CHAR:', char)
-    npp = np.array(list(char), dtype=np.uint8)
+    npp = np.array(char, dtype=np.uint8)
     if size:
         width, height = size
         npp.resize(height, width)
@@ -56,3 +56,33 @@ def create_char_grid(nchars, chars, w=TILE_W, h=TILE_H, grid_size=GRID_SIZE, bas
         bim.paste(convert_to_pil_image(im), box=(xbase, ybase))
 
     return bim
+
+def count_in_row(pred, row):
+    return sum(1 for _ in itertools.takewhile(pred, row))
+
+def resize_frame(im, base_xoff=BASE_XOFF, base_yoff=BASE_YOFF):
+    frame = list(np.asarray(im))
+    BG = frame[-1][-1]
+
+    char_is_bg = lambda c: c == BG
+    line_is_bg = lambda line: all(c == BG for c in line)
+
+    if set(itertools.chain.from_iterable(frame)) == {BG}:
+        return None
+
+    x1 = min(count_in_row(char_is_bg, line) for line in frame)
+    x2 = len(frame[0]) - min(count_in_row(char_is_bg, reversed(line)) for line in frame)
+    y1 = count_in_row(line_is_bg, frame)
+    y2 = len(frame) - count_in_row(line_is_bg, reversed(frame))
+
+    crop_area = (x1, y1, x2, y2)
+
+    if crop_area == (0, 0, len(frame[0]), len(frame)):
+        return None
+
+    off_area = (x1 - base_xoff, y1 - base_yoff, x2 - base_xoff, y2 - base_yoff)
+
+    fields = ('x1', 'y1', 'x2', 'y2')
+    loc = dict(zip(fields, off_area))
+
+    return loc, np.asarray(im.crop(crop_area))
