@@ -12,5 +12,5 @@ if __name__ == "__main__":
     with open(source, 'r', encoding='cp1255') as f, \
             open(target, 'wb') as o:
         for line in f:
-            lines = line.split('$')
+            lines = line.rstrip().split('$')
             o.write('\r'.join(text[::-1] for text in lines).replace('`', '"').encode('cp862') + b'\0')

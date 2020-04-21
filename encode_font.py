@@ -62,5 +62,7 @@ if __name__ == '__main__':
         for c in char_range:
             output.write(write_sint16le(offset))
             offset += len(encoded_chars.get(c, spacer))
+            print('OFFSET', c, write_sint16le(offset))
         for c in char_range:
             output.write(encoded_chars.get(c, spacer))
+            print('DATA', c, encoded_chars.get(c, spacer))

@@ -49,8 +49,10 @@ def decode(stream):
     assert stream.tell() == 0xA
     chars = range(first_char, last_char + 1)
     index = tuple(read_sint16le(stream) for c in chars)
-    char_data = read_char_data(stream, index)
+    char_data = tuple(read_char_data(stream, index))
     char_images = [convert_char(*read_char(cdata)) for cdata in char_data]
+    for c, off, data in zip(chars, index, char_data):
+        print(c, off.to_bytes(2, byteorder='little', signed=True), data)
     return chars, char_images
 
 if __name__ == '__main__':
