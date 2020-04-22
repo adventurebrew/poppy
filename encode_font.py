@@ -30,7 +30,7 @@ if __name__ == '__main__':
 
     filename = sys.argv[1]
     ref = sys.argv[2]
-    target = 'new-font.fn2'
+    target = 'new-font.bin'
     frames = read_image_grid(filename)
     frames = enumerate(resize_frame(frame) for frame in frames)
     available = [(idx, char) for idx, char in frames if char is not None]
